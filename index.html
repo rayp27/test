@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1220">
+  <meta name="description" content="Safety Performance — PT Geoservices Site PT Hamparan Anugrah Abadi, September 2025">
+  <title>Safety Performance — September 2025</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0b1220; --bar:#121d2b; --edge:#2d3a4d; --text:#edf2f8; --muted:#a9b6c8; --accent:#68b7ff; }
+    *, *::before, *::after { box-sizing: border-box; }
+    html,body { height:100%; margin:0; }
+    body { background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif; overflow:hidden; }
+    button { font:inherit; }
+    button:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+    .player { height:100vh; height:100dvh; display:grid; grid-template-rows:minmax(0,1fr) 57px; min-width:0; }
+    .stage { position:relative; background:#090e18; overflow:hidden; cursor:pointer; touch-action:pan-y; }
+    .slide { width:100%; height:100%; object-fit:contain; object-position:center center; position:absolute; inset:0; opacity:0; pointer-events:none; -webkit-user-drag:none; user-select:none; }
+    .slide.is-visible { opacity:1; }
+    .slide.is-animating { transition:opacity 420ms ease-in-out; }
+    .slide-error { position:absolute; inset:0; display:none; place-content:center; text-align:center; color:#ffcfcc; padding:2rem; }
+    .slide-error.show { display:grid; }
+    .controls { position:relative; z-index:5; display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:center; padding:0 19px; border-top:1px solid var(--edge); background:var(--bar); gap:16px; }
+    .identity { color:var(--text); font-weight:600; font-size:13px; line-height:1.3; white-space:nowrap; text-overflow:ellipsis; overflow:hidden; }
+    .identity .month { font-size:11px; font-weight:400; color:var(--muted); margin-top:2px; }
+    .step-buttons, .extra-buttons { display:flex; align-items:center; gap:8px; }
+    .extra-buttons { justify-content:flex-end; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; min-height:35px; padding:6px 10px; border:1px solid transparent; border-radius:8px; background:transparent; color:var(--text); cursor:pointer; transition:background-color 140ms ease,border-color 140ms ease; }
+    .btn:hover { background:#253347; }
+    .btn:disabled { opacity:.28; cursor:default; background:transparent; }
+    .btn .label { margin-left:6px; }
+    .btn svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+    .btn-primary { background:#263f62; border-color:#365779; }
+    .btn-primary:hover { background:#33547c; }
+    .slide-count { min-width:82px; text-align:center; color:#e8f0fd; font-size:12px; font-variant-numeric:tabular-nums; letter-spacing:.03em; }
+    .slide-count strong { font-size:14px; }
+    .divider { width:1px; height:21px; background:var(--edge); margin:0 1px; }
+    .progress { position:absolute; top:-2px; height:2px; left:0; width:100%; background:transparent; pointer-events:none; }
+    .progress span { display:block; height:100%; width:4.1667%; background:#72bfff; transition:width 420ms ease; }
+    dialog { border:1px solid #3a4d63; border-radius:12px; background:#152233; color:var(--text); box-shadow:0 20px 90px #0009; padding:0; width:min(880px,calc(100vw - 26px)); max-height:min(780px,calc(100dvh - 38px)); }
+    dialog::backdrop { background:#030914bb; backdrop-filter:blur(7px); }
+    .dialog-header { padding:15px 18px; border-bottom:1px solid #34445a; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .dialog-header h2 { font-size:16px; margin:0; }
+    .dialog-header span { font-weight:400; font-size:12px; color:var(--muted); }
+    .thumbnails { overflow-y:auto; padding:17px; display:grid; grid-template-columns:repeat(auto-fill,minmax(156px,1fr)); gap:14px; max-height:calc(min(780px,100dvh - 38px) - 63px); }
+    .thumb { background:#1d3044; padding:5px; border:2px solid transparent; border-radius:8px; color:var(--text); text-align:left; cursor:pointer; }
+    .thumb:hover, .thumb:focus-visible { border-color:#8dbfff; }
+    .thumb.selected { border-color:#6aafff; }
+    .thumb img { display:block; aspect-ratio:16/9; width:100%; object-fit:cover; background:white; border-radius:3px; }
+    .thumb span { display:block; font-size:12px; padding:7px 4px 3px; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    @media(max-width:720px) {
+      .controls { padding:0 8px; gap:0; grid-template-columns:1fr auto; }
+      .identity { display:none; }
+      .step-buttons { justify-content:flex-start; gap:4px; }
+      .extra-buttons { gap:2px; }
+      .step-buttons .label { display:none; }
+      .slide-count { min-width:67px; }
+      .btn { padding:7px; }
+      .btn .label { display:none; }
+    }
+    @media(prefers-reduced-motion:reduce) {
+      *,*::before,*::after { transition:none !important; animation:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main id="player" class="player" aria-label="Safety Performance slide presentation">
+    <section id="stage" class="stage" aria-label="Presentation slide. Click or tap to move to the next slide.">
+      <img id="layerA" class="slide is-visible" src="slides/slide-01.webp" alt="Slide 1 of 24" width="2560" height="1440" draggable="false" fetchpriority="high">
+      <img id="layerB" class="slide" alt="" width="2560" height="1440" draggable="false">
+      <div id="slideError" class="slide-error" role="alert">A slide could not be loaded. Check that the <strong>slides</strong> folder was uploaded alongside index.html.</div>
+    </section>
+    <nav class="controls" aria-label="Presentation controls">
+      <div class="progress" aria-hidden="true"><span id="progressFill"></span></div>
+      <div class="identity">Safety Performance<div class="month">September 2025 · PT Geoservices</div></div>
+      <div class="step-buttons">
+        <button id="prev" class="btn" aria-label="Previous slide" title="Previous slide (←)" disabled>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span class="label">Previous</span>
+        </button>
+        <button id="next" class="btn btn-primary" aria-label="Next slide" title="Next slide (→)">
+          <span class="label" style="margin:0 6px 0 0">Next</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+      <div class="extra-buttons">
+        <button id="slidePicker" class="btn" title="Show all slides" aria-label="Choose a slide"><span class="slide-count" id="count"><strong>1</strong> / 24</span></button>
+        <span class="divider" aria-hidden="true"></span>
+        <button id="fullscreen" class="btn" aria-label="Enter fullscreen" title="Fullscreen (F)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></svg>
+        </button>
+      </div>
+    </nav>
+    <span id="announcer" class="sr-only" aria-live="polite" aria-atomic="true">Slide 1 of 24</span>
+  </main>
+
+  <dialog id="pickerDialog" aria-label="Choose a slide">
+    <div class="dialog-header">
+      <h2>Choose a slide <span>· 24 original slides</span></h2>
+      <button id="closePicker" class="btn" aria-label="Close slide chooser">✕</button>
+    </div>
+    <div id="thumbGrid" class="thumbnails"></div>
+  </dialog>
+
+  <script>
+    (() => {
+      'use strict';
+      const TOTAL = 24;
+      const FADE_MS = 420;
+      const player = document.getElementById('player');
+      const stage = document.getElementById('stage');
+      const layers = [document.getElementById('layerA'), document.getElementById('layerB')];
+      const previousButton = document.getElementById('prev');
+      const nextButton = document.getElementById('next');
+      const fullscreenButton = document.getElementById('fullscreen');
+      const pickerButton = document.getElementById('slidePicker');
+      const dialog = document.getElementById('pickerDialog');
+      const thumbGrid = document.getElementById('thumbGrid');
+      const count = document.getElementById('count');
+      const progress = document.getElementById('progressFill');
+      const announcer = document.getElementById('announcer');
+      const errorMessage = document.getElementById('slideError');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const path = index => `slides/slide-${String(index + 1).padStart(2, '0')}.webp`;
+      let current = 0;
+      let active = 0;
+      let transitioning = false;
+      let queued = null;
+      let loadedThumbs = false;
+      let touchStartX = null;
+      let suppressClick = false;
+
+      function warm(index) {
+        if (index < 0 || index >= TOTAL) return;
+        const img = new Image();
+        img.src = path(index);
+      }
+      function updateUI() {
+        previousButton.disabled = current === 0;
+        nextButton.disabled = current === TOTAL - 1;
+        count.innerHTML = `<strong>${current + 1}</strong> / ${TOTAL}`;
+        progress.style.width = `${((current + 1) / TOTAL) * 100}%`;
+        announcer.textContent = `Slide ${current + 1} of ${TOTAL}`;
+        document.querySelectorAll('.thumb').forEach((button, i) => {
+          button.classList.toggle('selected', i === current);
+          button.setAttribute('aria-current', i === current ? 'true' : 'false');
+        });
+        warm(current + 1);
+        warm(current - 1);
+      }
+      async function goTo(target) {
+        target = Math.max(0, Math.min(TOTAL - 1, Number(target)));
+        if (target === current) return;
+        if (transitioning) { queued = target; return; }
+        transitioning = true;
+        errorMessage.classList.remove('show');
+        const incomingIndex = 1 - active;
+        const incoming = layers[incomingIndex];
+        const outgoing = layers[active];
+        incoming.classList.remove('is-visible', 'is-animating');
+        incoming.style.opacity = '0';
+        incoming.alt = `Slide ${target + 1} of ${TOTAL}`;
+        incoming.style.zIndex = '2';
+        outgoing.style.zIndex = '1';
+        incoming.src = path(target);
+        try { await incoming.decode(); }
+        catch (e) {
+          errorMessage.classList.add('show');
+          transitioning = false;
+          return;
+        }
+        const transitionDuration = reduceMotion.matches ? 0 : FADE_MS;
+        if (transitionDuration) {
+          incoming.classList.add('is-animating');
+          // Allow the initial transparent state to paint before cross-fading.
+          await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        }
+        incoming.classList.add('is-visible');
+        incoming.style.opacity = '1';
+        current = target;
+        updateUI();
+        window.setTimeout(() => {
+          outgoing.classList.remove('is-visible', 'is-animating');
+          outgoing.style.opacity = '0';
+          incoming.classList.remove('is-animating');
+          active = incomingIndex;
+          transitioning = false;
+          if (queued !== null) {
+            const requested = queued;
+            queued = null;
+            if (requested !== current) goTo(requested);
+          }
+        }, transitionDuration + 35);
+      }
+      const next = () => goTo(current + 1);
+      const prev = () => goTo(current - 1);
+
+      previousButton.addEventListener('click', prev);
+      nextButton.addEventListener('click', next);
+      stage.addEventListener('click', () => {
+        if (suppressClick) { suppressClick = false; return; }
+        next();
+      });
+      stage.addEventListener('pointerdown', event => {
+        if (event.pointerType === 'touch') touchStartX = event.clientX;
+      });
+      stage.addEventListener('pointerup', event => {
+        if (event.pointerType !== 'touch' || touchStartX === null) return;
+        const distance = event.clientX - touchStartX;
+        touchStartX = null;
+        if (Math.abs(distance) > 55) {
+          suppressClick = true;
+          window.setTimeout(() => { suppressClick = false; }, 500);
+          distance < 0 ? next() : prev();
+        }
+      });
+      stage.addEventListener('pointercancel', () => { touchStartX = null; });
+
+      async function toggleFullscreen() {
+        try {
+          if (!document.fullscreenElement) await player.requestFullscreen();
+          else await document.exitFullscreen();
+        } catch (e) { /* Browser may disallow fullscreen. */ }
+      }
+      fullscreenButton.addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', () => {
+        const enabled = !!document.fullscreenElement;
+        fullscreenButton.title = enabled ? 'Exit fullscreen (F)' : 'Fullscreen (F)';
+        fullscreenButton.setAttribute('aria-label', enabled ? 'Exit fullscreen' : 'Enter fullscreen');
+      });
+
+      function openPicker() {
+        if (!loadedThumbs) {
+          const fragment = document.createDocumentFragment();
+          for (let i = 0; i < TOTAL; i++) {
+            const button = document.createElement('button');
+            button.className = 'thumb';
+            button.type = 'button';
+            button.setAttribute('aria-label', `Jump to slide ${i + 1}`);
+            const image = document.createElement('img');
+            image.src = path(i);
+            image.loading = 'lazy';
+            image.alt = '';
+            const label = document.createElement('span');
+            label.textContent = `Slide ${i + 1}`;
+            button.append(image, label);
+            button.addEventListener('click', () => { dialog.close(); goTo(i); });
+            fragment.append(button);
+          }
+          thumbGrid.append(fragment);
+          loadedThumbs = true;
+        }
+        updateUI();
+        dialog.showModal();
+      }
+      pickerButton.addEventListener('click', openPicker);
+      document.getElementById('closePicker').addEventListener('click', () => dialog.close());
+      dialog.addEventListener('click', event => {
+        if (event.target === dialog) dialog.close();
+      });
+      document.addEventListener('keydown', event => {
+        if (dialog.open || event.altKey || event.ctrlKey || event.metaKey) return;
+        if (['ArrowRight','ArrowDown','PageDown',' ','Enter'].includes(event.key)) {
+          event.preventDefault(); next();
+        } else if (['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(event.key)) {
+          event.preventDefault(); prev();
+        } else if (event.key === 'Home') {
+          event.preventDefault(); goTo(0);
+        } else if (event.key === 'End') {
+          event.preventDefault(); goTo(TOTAL - 1);
+        } else if (event.key.toLowerCase() === 'f') {
+          event.preventDefault(); toggleFullscreen();
+        }
+      });
+      updateUI();
+    })();
+  </script>
+</body>
+</html>
